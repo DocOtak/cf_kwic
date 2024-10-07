@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CF Standard Name KWIC Index</title>
+  <style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    dt {
+        font-weight: bold; 
+    }
+    dd {
+        display: inline-block;
+        margin-left: 0.5em;
+    }
+    .keyword{
+        color: red;
+    }
+
+    a {text-decoration:none; color:black}
+    a:hover {background-color:yellow}
+  </style>
+  <script>
+    const ignore = new Set(["of", "to", "due", "from", "in"])
+    const params = new URLSearchParams(window.location.search);
+    let tableURI = params.get("tableURI")
+    //default to current name table
+    if (tableURI===null) {
+        tableURI = "https://cfconventions.org/Data/cf-standard-names/current/src/cf-standard-name-table.xml"
+    }
+
+    fetch(tableURI).then(response => {
+        document.getElementById("status").innerText = "Indexing Standard Name Table"
+        return response.text();
+    }).then(xml => {
+        const alphaDL = document.getElementById("alpha")
+        const xmlParser = new DOMParser();
+        const standardNameTable = xmlParser.parseFromString(xml, "text/xml");
+
+        const keyWords = new Set();
+        const standardNames = new Array();
+        const keywordGroups = new Map();
+        const tableVersion = standardNameTable.querySelectorAll("version_number")[0].innerHTML
+
+        standardNameTable.querySelectorAll("entry").forEach(standardNameEntry => {
+            const standardName = standardNameEntry.id;
+            standardNames.push(standardName);
+        })
+
+        standardNames.sort()
+
+        standardNames.forEach(standardName => {
+            const tokens = standardName.split("_")
+            const tokenSet = (new Set(tokens)).difference(ignore)
+            tokenSet.forEach(token => {
+                keyWords.add(token)
+                if (!keywordGroups.has(token)){
+                    keywordGroups.set(token, new Array())
+                }
+                keywordGroups.get(token).push(standardName)
+        })
+        })
+
+        const sortedTokens = Array.from(keyWords).sort()
+
+        // Make the alpha index at the top also sort
+        const alphaGroups = Map.groupBy(sortedTokens, token => {
+            return token.charAt(0)
+        })
+        alphaGroups.forEach((group, alpha) => {
+            const dt = document.createElement("dt")
+            dt.innerText = alpha
+            alphaDL.appendChild(dt)
+            group.forEach(term => {
+                const dd = document.createElement("dd")
+                const a = document.createElement("a")
+                a.innerText = term
+                a.href = `#${term}`
+                dd.appendChild(a)
+                alphaDL.appendChild(dd)
+            })
+        })
+
+        sortedTokens.forEach(keyword => {
+            let names = keywordGroups.get(keyword)
+            names.forEach(name => {
+                const tr = document.getElementById("kwicTable").insertRow()
+                const a = document.createElement("a")
+                a.setAttribute("name", keyword)
+
+                const leftCell = tr.insertCell()
+                leftCell.align = "right"
+                leftCell.appendChild(a)
+
+                const rightCell = tr.insertCell()
+                const tokens = name.split("_")
+
+                let seenKW = false;
+
+
+                tokens.forEach((token, index, arr) => {
+                    const underBar = document.createTextNode("_")
+                    let elm;
+                    if (keyWords.has(token)){
+                        elm = document.createElement("a")
+                        elm.href = `#${token}`
+                        elm.innerText = token
+                    } else {
+                        elm = document.createTextNode(token)
+                    }
+                    if (token === keyword){
+                        seenKW = true;
+                        elm.className = "keyword" ;
+                    }
+
+                    if (seenKW){
+                        rightCell.appendChild(elm)
+                        if (index !== arr.length - 1){
+                            rightCell.appendChild(underBar)
+                        }
+                    } else {
+                        leftCell.appendChild(elm)
+                        leftCell.appendChild(underBar)
+                    }
+                })
+            })
+        })
+        try {
+            const selectKeyword = window.location.hash.replace("#", "")
+            document.getElementsByName(selectKeyword)[0].scrollIntoView()
+        } catch{
+            // pass
+        }
+        document.getElementById("status").innerText = `KWIC (Keyword in Context) Index for CF Standard Names, v${tableVersion}`
+    }).catch(() =>{
+        document.getElementById("status").innerText = "Error Loading or Indexing Standard Name Table" 
+    })
+  </script>
+</head>
+
+<body>
+    <h1 id="status">Loading Standard Name Table</h1>
+    <dl id="alpha">
+    </dl>
+    <table id="kwicTable" cellspacing="0" cellpadding="0">
+        <tbody>
+        </tbody>
+    </table>
+</body>
+
+</html>
