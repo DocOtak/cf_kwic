@@ -16,9 +16,6 @@
         display: inline-block;
         margin-left: 0.5em;
     }
-    .keyword{
-        color: red;
-    }
 
     a {text-decoration:none; color:black}
     a:hover {background-color:yellow}
@@ -91,14 +88,11 @@
         const underBar = document.createTextNode("_")
         sortedTokens.forEach(keyword => {
             let names = keywordGroups.get(keyword)
-            names.forEach(name => {
+            names.forEach((name, nameIdx) => {
                 const tr = kwicTable.insertRow()
-                const a = document.createElement("a")
-                a.setAttribute("name", keyword)
 
                 const leftCell = tr.insertCell()
                 leftCell.align = "right"
-                leftCell.appendChild(a)
 
                 const rightCell = tr.insertCell()
                 const tokens = name.split("_")
@@ -117,7 +111,10 @@
                     }
                     if (token === keyword){
                         seenKW = true;
-                        elm.className = "keyword" ;
+                        if (nameIdx === 0){
+                            elm.setAttribute("name", keyword)
+                        }
+                        elm.style.color = "red"
                     }
 
                     if (seenKW){
