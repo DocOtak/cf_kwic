@@ -36,6 +36,10 @@
         document.getElementById("status").innerText = "Indexing Standard Name Table"
         return response.text();
     }).then(xml => {
+        const kwicTable = document.createElement("table")
+        kwicTable.setAttribute("cellspacing", "0")
+        kwicTable.setAttribute("cellpadding", "0")
+
         const alphaDL = document.getElementById("alpha")
         const xmlParser = new DOMParser();
         const standardNameTable = xmlParser.parseFromString(xml, "text/xml");
@@ -87,7 +91,7 @@
         sortedTokens.forEach(keyword => {
             let names = keywordGroups.get(keyword)
             names.forEach(name => {
-                const tr = document.getElementById("kwicTable").insertRow()
+                const tr = kwicTable.insertRow()
                 const a = document.createElement("a")
                 a.setAttribute("name", keyword)
 
@@ -135,6 +139,7 @@
             // pass
         }
         document.getElementById("status").innerText = `KWIC (Keyword in Context) Index for CF Standard Names, v${tableVersion}`
+        document.body.appendChild(kwicTable)
     }).catch(() =>{
         document.getElementById("status").innerText = "Error Loading or Indexing Standard Name Table" 
     })
@@ -145,10 +150,12 @@
     <h1 id="status">Loading Standard Name Table</h1>
     <dl id="alpha">
     </dl>
+    <!--
     <table id="kwicTable" cellspacing="0" cellpadding="0">
         <tbody>
         </tbody>
     </table>
+-->
 </body>
 
 </html>
