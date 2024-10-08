@@ -88,6 +88,7 @@
             })
         })
 
+        const underBar = document.createTextNode("_")
         sortedTokens.forEach(keyword => {
             let names = keywordGroups.get(keyword)
             names.forEach(name => {
@@ -106,7 +107,6 @@
 
 
                 tokens.forEach((token, index, arr) => {
-                    const underBar = document.createTextNode("_")
                     let elm;
                     if (keyWords.has(token)){
                         elm = document.createElement("a")
@@ -123,11 +123,11 @@
                     if (seenKW){
                         rightCell.appendChild(elm)
                         if (index !== arr.length - 1){
-                            rightCell.appendChild(underBar)
+                            rightCell.appendChild(underBar.cloneNode())
                         }
                     } else {
                         leftCell.appendChild(elm)
-                        leftCell.appendChild(underBar)
+                        leftCell.appendChild(underBar.cloneNode())
                     }
                 })
             })
