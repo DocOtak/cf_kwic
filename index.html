@@ -21,6 +21,7 @@
     a:hover {background-color:yellow}
   </style>
   <script>
+    window.onload = () => {
     const ignore = new Set(["of", "to", "due", "from", "in", "and"])
     const params = new URLSearchParams(window.location.search);
     let tableURI = params.get("tableURI")
@@ -134,6 +135,7 @@
     }).catch(() =>{
         document.getElementById("status").innerText = "Error Loading or Indexing Standard Name Table" 
     })
+    }
   </script>
 </head>
 
