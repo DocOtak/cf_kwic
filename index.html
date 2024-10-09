@@ -129,12 +129,6 @@
                 })
             })
         })
-        try {
-            const selectKeyword = window.location.hash.replace("#", "")
-            document.getElementsByName(selectKeyword)[0].scrollIntoView()
-        } catch{
-            // pass
-        }
         document.getElementById("status").innerText = `KWIC (Keyword in Context) Index for CF Standard Names, v${tableVersion}`
         document.body.appendChild(kwicTable)
     }).catch(() =>{
