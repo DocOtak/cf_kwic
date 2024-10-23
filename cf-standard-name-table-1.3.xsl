@@ -16,9 +16,22 @@
 
         <script type="text/javascript"><![CDATA[
 
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll(".standard-name-description").forEach(el => el.innerHTML = el.innerHTML.replace(/area_type table/g, '<a href="http://cfconventions.org/Data/area-type-table/current/build/area-type-table.html">area_type table</a>'))
-        });
+        const injectAreaTableLink = () => {
+            document.querySelectorAll(".standard-name-description").forEach((el) => {
+                el.innerHTML = el.innerHTML.replace(/area_type table/g, '<a href="http://cfconventions.org/Data/area-type-table/current/build/area-type-table.html">area_type table</a>');
+            })
+        }
+
+        // There is a 20+ year old firefox bug that doesn't fire DOM ready events when the DOM is ready if it was generated
+        // by and XLST, so we check once a second until the dom is not loadings
+        const tryRunWhenReady = () => {
+            if (document.readyState !== "loading") {
+               injectAreaTableLink();
+            } else {
+                setTimeout(tryRunWhenReady, 1000)
+            }
+        }
+        tryRunWhenReady()
         ]]>
         </script>
     <head>
