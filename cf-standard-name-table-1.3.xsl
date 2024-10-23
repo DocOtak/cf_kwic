@@ -82,18 +82,6 @@
         }
     </style>
 
-    <h1 class="documentFirstHeading">CF Standard Name Table</h1>
-
-    <div class="documentByLine">
-
-        <div class="reviewHistory">
-        </div>
-
-    </div>
-
-
-    <div class="plain">
-
 
         <!-- This page requires an external javascript which is included by Plone -->
         <!-- See: /usr/local/zopeinstance1/Products/CMFPlone/skins/plone_ecmascript/toggleHelp.js -->
@@ -335,10 +323,10 @@
 
 ]]> 
         </script>
-    </div>
         
         </head>
         <body>
+    <h1 class="documentFirstHeading">CF Standard Name Table</h1>
 	  <b>Version <xsl:value-of select="version_number"/>,
           <xsl:element name="newdate">
             <xsl:call-template name="FormatDate">
