@@ -489,8 +489,8 @@ The canonical units associated with each standard name are usually the SI units 
                 </table>
             </div>
             
+            <p><i>In the table below, click on a standard-name to show or hide its description and help text.</i></p> 
             <table id="standard_name_table" width="100%">
-                <p><i>In the table below, click on a standard-name to show or hide its description and help text.</i></p> 
                 <th width="76%" class="table-header">Standard Name</th>
                 <th width="8%" class="table-header">Canonical Units</th>
                 <th width="8%" class="table-header">AMIP</th>
